@@ -3,8 +3,27 @@
   "version": "1.0.0",
   "description": "Convert any cake recipe to a different pan size: scales ingredients, fixes eggs, adjusts baking time. Free, offline, printable.",
   "license": "MIT",
-  "engines": { "node": ">=20" },
-  "scripts": { "test": "node --test", "dev": "npx --yes serve public -l 3000", "chart": "node scripts/build-chart.js", "assets": "node scripts/make-assets.js" },
-  "keywords": ["baking", "cake", "recipe", "pan-size", "converter", "calculator", "offline", "printable"],
-  "devDependencies": { "@napi-rs/canvas": "^0.1.0" }
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test",
+    "dev": "npx --yes serve public -l 3000",
+    "chart": "node scripts/build-chart.js",
+    "assets": "node scripts/make-assets.js",
+    "stamp": "node scripts/stamp-assets.js"
+  },
+  "keywords": [
+    "baking",
+    "cake",
+    "recipe",
+    "pan-size",
+    "converter",
+    "calculator",
+    "offline",
+    "printable"
+  ],
+  "devDependencies": {
+    "@napi-rs/canvas": "^0.1.0"
+  }
 }

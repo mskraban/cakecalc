@@ -32,3 +32,9 @@ test('fonts and licences are present', () => {
   for (const m of fs.readFileSync(path.join(PUB, 'fonts.css'), 'utf8').matchAll(/url\('(fonts\/[^']+)'\)/g)) assert.ok(fs.existsSync(path.join(PUB, m[1])));
   assert.ok(fs.readdirSync(path.join(PUB, 'fonts')).filter((f) => /LICENSE/.test(f)).length >= 3);
 });
+
+test('engine.js and fonts.css are referenced with their current content hash (run )', () => {
+  const file = path.join(PUB, 'index.html'), before = fs.readFileSync(file, 'utf8'); execFileSync('node', [path.join(__dirname, '..', 'scripts', 'stamp-assets.js')]);
+  assert.equal(fs.readFileSync(file, 'utf8'), before, 'asset hashes are stale');
+  assert.match(before, /engine\.js\?v=[0-9a-f]{8}/); assert.match(before, /fonts\.css\?v=[0-9a-f]{8}/);
+});
