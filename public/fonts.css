@@ -1,0 +1,5 @@
+/* Self-hosted variable fonts (SIL Open Font License, see /fonts/*-LICENSE.txt). */
+@font-face { font-family: 'Inter'; font-style: normal; font-display: swap; font-weight: 100 900; src: url('fonts/inter-latin-wght-normal.woff2') format('woff2-variations'); }
+@font-face { font-family: 'Bricolage Grotesque'; font-style: normal; font-display: swap; font-weight: 200 800; src: url('fonts/bricolage-grotesque-latin-wght-normal.woff2') format('woff2-variations'); }
+@font-face { font-family: 'JetBrains Mono'; font-style: normal; font-display: swap; font-weight: 100 800; src: url('fonts/jetbrains-mono-latin-wght-normal.woff2') format('woff2-variations'); }
+:root { --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; --font-display: 'Bricolage Grotesque', 'Inter', system-ui, sans-serif; --font-mono: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace; }

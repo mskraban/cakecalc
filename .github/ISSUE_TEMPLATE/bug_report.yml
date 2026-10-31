@@ -1,0 +1,11 @@
+name: Bug report
+description: Something is wrong or looks off
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes: { label: What happened?, description: 'Paste the input you used and a screenshot if you can.' }
+    validations: { required: true }
+  - type: input
+    id: env
+    attributes: { label: Browser and OS }

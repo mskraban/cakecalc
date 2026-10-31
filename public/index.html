@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cakecalc: Convert Any Cake Recipe to a Different Pan Size</title>
+<meta name="description" content="Paste a recipe, pick the pan it was written for and the pan you have. Cakecalc scales every ingredient, fixes the eggs and adjusts baking time. Free, offline, printable.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="theme-color" content="#fff6ec">
+<link rel="canonical" href="https://cakecalc.vercel.app/">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Cakecalc">
+<meta property="og:title" content="Cakecalc: convert any cake recipe to a different pan size">
+<meta property="og:description" content="Scale ingredients, eggs and baking time between pans. Free, offline, printable.">
+<meta property="og:url" content="https://cakecalc.vercel.app/">
+<meta property="og:image" content="https://cakecalc.vercel.app/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Cakecalc: convert any cake recipe to a different pan size">
+<meta name="twitter:description" content="Scale ingredients, eggs and baking time between pans.">
+<meta name="twitter:image" content="https://cakecalc.vercel.app/og.jpg">
+<link rel="stylesheet" href="fonts.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Cakecalc","url":"https://cakecalc.vercel.app/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","description":"Converts cake and baking recipes between pan sizes, scaling ingredients and baking time.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I convert a cake recipe to a different pan size?","acceptedAnswer":{"@type":"Answer","text":"Divide the area of the new pan by the area of the pan in the recipe. Multiply every ingredient by that number. Cakecalc does the maths for you and rounds to kitchen fractions."}},{"@type":"Question","name":"How many eggs do I use when the recipe scales to a fraction?","acceptedAnswer":{"@type":"Answer","text":"Round to the nearest whole egg, then correct with a little beaten egg: a large egg is about 50 g. Cakecalc shows the exact number and how much to adjust."}},{"@type":"Question","name":"Does the baking time change with a different pan?","acceptedAnswer":{"@type":"Answer","text":"If the batter is the same depth, the time stays about the same. Deeper batter needs longer at a slightly lower temperature; a thinner layer bakes faster."}}]}]}</script>
+<style>
+:root { --bg: #fff6ec; --card: #ffffff; --ink: #3b2a24; --muted: #7d6a62; --line: #f0dfd0; --berry: #d9466f; --berry2: #f27a96; --cream: #ffeedd; --gold: #e9a23b; --radius: 18px; }
+* { box-sizing: border-box; } html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 16px/1.6 var(--font-body); }
+h1, h2, h3 { font-family: var(--font-display); letter-spacing: -.02em; line-height: 1.1; margin: 0; } p { margin: 0; } a { color: var(--berry); }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 22px; }
+header.top { display: flex; align-items: center; gap: 12px; padding: 18px 0; } header.top b { font: 800 22px var(--font-display); letter-spacing: -.02em; } header.top nav { margin-left: auto; display: flex; gap: 18px; font-size: 14px; } header.top nav a { color: var(--muted); text-decoration: none; } header.top nav a:hover { color: var(--ink); }
+.hero { padding: 26px 0 30px; text-align: center; } .hero h1 { font-size: clamp(34px, 6vw, 62px); max-width: 16ch; margin: 0 auto; } .hero h1 em { font-style: normal; color: var(--berry); } .hero p { color: var(--muted); font-size: 18px; max-width: 56ch; margin: 14px auto 0; }
+.grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: 22px; align-items: start; } @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; box-shadow: 0 14px 40px -26px rgba(120, 60, 40, .4); }
+.step { display: flex; align-items: center; gap: 10px; font: 700 13px var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--berry); margin-bottom: 10px; } .step i { width: 24px; height: 24px; border-radius: 50%; background: var(--berry); color: #fff; display: grid; place-items: center; font: 700 12px var(--font-body); font-style: normal; }
+label { display: block; font-weight: 600; font-size: 14px; margin: 14px 0 6px; } label small { color: var(--muted); font-weight: 400; }
+textarea, select, input[type=number], input[type=text] { width: 100%; font: inherit; color: inherit; background: #fffdfa; border: 1.5px solid var(--line); border-radius: 12px; padding: 11px 13px; } textarea { min-height: 220px; resize: vertical; font-size: 15px; line-height: 1.55; }
+textarea:focus, select:focus, input:focus { outline: 2px solid var(--berry2); outline-offset: 1px; border-color: transparent; }
+.row { display: flex; gap: 10px; } .row > * { min-width: 0; } .row .n { flex: 0 0 74px; } .row .grow { flex: 1; }
+.btn { font: 600 15px var(--font-body); border: 0; border-radius: 999px; padding: 12px 20px; cursor: pointer; background: var(--cream); color: var(--ink); transition: transform .1s, filter .15s; } .btn:hover { filter: brightness(.96); } .btn:active { transform: translateY(1px); } .btn.primary { background: var(--berry); color: #fff; box-shadow: 0 10px 24px -12px var(--berry); } .btn.sm { padding: 8px 14px; font-size: 13.5px; }
+.seg { display: inline-flex; border: 1.5px solid var(--line); border-radius: 999px; overflow: hidden; } .seg button { border: 0; background: none; padding: 8px 14px; font: 600 13.5px var(--font-body); color: var(--muted); cursor: pointer; } .seg button[aria-pressed=true] { background: var(--ink); color: #fff; }
+.custom { display: none; background: var(--cream); border-radius: 12px; padding: 12px; margin-top: 8px; } .custom.on { display: block; }
+.hint { color: var(--muted); font-size: 13.5px; margin-top: 8px; }
+.result h2 { font-size: 15px; font-family: var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--berry); }
+.big { font: 800 clamp(40px, 7vw, 64px)/1 var(--font-display); margin: 6px 0 2px; } .big small { font-size: .4em; color: var(--muted); font-weight: 600; }
+.pans { display: flex; align-items: flex-end; justify-content: center; gap: 26px; margin: 16px 0 6px; min-height: 120px; } .pans figure { margin: 0; text-align: center; font-size: 12.5px; color: var(--muted); } .pans svg { display: block; margin: 0 auto 6px; }
+ul.ing { list-style: none; margin: 14px 0 0; padding: 0; } ul.ing li { padding: 8px 0; border-bottom: 1px dashed var(--line); font-size: 17px; } ul.ing li.text { color: var(--muted); font-size: 14.5px; } ul.ing b { font-weight: 700; } ul.ing .tip { display: block; font-size: 13px; color: var(--berry); }
+.oven { background: var(--cream); border-radius: 14px; padding: 14px 16px; margin-top: 16px; } .oven b { font-size: 18px; } .oven p { color: var(--muted); font-size: 14px; margin-top: 4px; }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+.empty { color: var(--muted); text-align: center; padding: 30px 8px; }
+section.info { padding: 56px 0 8px; } section.info h2 { font-size: clamp(26px, 4vw, 38px); margin-bottom: 14px; } section.info p, section.info li { color: var(--muted); max-width: 70ch; } section.info ol { padding-left: 20px; }
+.tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; background: #fff; margin: 18px 0; } table { border-collapse: collapse; width: 100%; font-size: 14.5px; } th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); } th { font: 600 12px var(--font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); background: #fffaf5; } tr:last-child td { border: 0; }
+details { border-bottom: 1px solid var(--line); padding: 4px 0; } details summary { cursor: pointer; font: 600 18px var(--font-display); padding: 16px 0; list-style: none; } details summary::-webkit-details-marker { display: none; } details summary::after { content: '+'; float: right; color: var(--berry); font-size: 24px; } details[open] summary::after { content: '–'; } details p { padding: 0 0 18px; }
+footer { margin-top: 60px; padding: 30px 0 50px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; display: flex; flex-wrap: wrap; gap: 14px; justify-content: space-between; }
+.skip { position: absolute; left: -999px; } .skip:focus { left: 8px; top: 8px; background: #fff; padding: 8px; z-index: 9; }
+.toast { position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 16px); background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 999px; font-size: 14px; opacity: 0; transition: .25s; pointer-events: none; } .toast.on { opacity: 1; transform: translate(-50%, 0); }
+#printcard { display: none; }
+@media print { body { background: #fff; } body > *:not(#printcard) { display: none !important; } #printcard { display: block; padding: 8mm; } #printcard h2 { font-size: 26pt; } #printcard .meta { color: #555; margin: 4pt 0 14pt; font-size: 11pt; } #printcard li { font-size: 13pt; padding: 4pt 0; border-bottom: .5pt solid #ccc; list-style: none; } #printcard ul { padding: 0; } #printcard .steps { margin-top: 14pt; font-size: 12pt; color: #333; white-space: pre-wrap; } #printcard .foot { margin-top: 18pt; font-size: 9pt; color: #888; } }
+</style>
+</head>
+<body>
+<a class="skip" href="#calc">Skip to the calculator</a>
+<div class="wrap">
+<header class="top"><svg width="34" height="34" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#d9466f"/><path d="M14 36h36v12a4 4 0 0 1-4 4H18a4 4 0 0 1-4-4z" fill="#fff"/><path d="M14 36c4 5 8-3 12 0s8-3 12 0 8-3 12 0V30a4 4 0 0 0-4-4H18a4 4 0 0 0-4 4z" fill="#ffe3ea"/><rect x="30" y="14" width="4" height="12" rx="2" fill="#ffd36e"/><ellipse cx="32" cy="12" rx="3.2" ry="4.4" fill="#ff9d3a"/></svg><b>Cakecalc</b><nav aria-label="Main"><a href="#chart">Pan chart</a><a href="#faq">FAQ</a><a href="https://github.com/mskraban/cakecalc">GitHub</a></nav></header>
+<main id="main">
+<section class="hero"><h1>Change the pan. <em>Keep the cake.</em></h1><p>Paste any recipe, say which pan it was written for and which one you own. Every ingredient is scaled, the eggs are sorted out and the oven time is adjusted.</p></section>
+
+<div class="grid" id="calc">
+  <div class="card">
+    <div class="step"><i>1</i> Your recipe</div>
+    <label for="recipe" style="margin-top:0">Paste the ingredients <small>(one per line; steps are kept as they are)</small></label>
+    <textarea id="recipe" spellcheck="false" placeholder="2 1/2 cups all-purpose flour&#10;1 cup sugar&#10;3 large eggs&#10;1/2 cup butter, softened&#10;1 tsp vanilla"></textarea>
+    <div class="actions" style="margin-top:10px"><button class="btn sm" id="sample" type="button">Try a sample</button><button class="btn sm" id="clear" type="button">Clear</button></div>
+
+    <div class="step" style="margin-top:22px"><i>2</i> The pans</div>
+    <label for="fromPan" style="margin-top:0">The recipe is written for</label>
+    <div class="row"><select class="n" id="fromCount" aria-label="Number of pans in the recipe"></select><select class="grow" id="fromPan"></select></div>
+    <div class="custom" id="fromCustom"></div>
+    <label for="toPan">I will bake in</label>
+    <div class="row"><select class="n" id="toCount" aria-label="Number of pans I will use"></select><select class="grow" id="toPan"></select></div>
+    <div class="custom" id="toCustom"></div>
+    <label>How to compare the pans</label>
+    <div class="seg" id="mode" role="group" aria-label="Comparison mode"><button type="button" data-v="depth" aria-pressed="true">Same batter depth</button><button type="button" data-v="volume">Fill pans to usual depth</button></div>
+    <p class="hint" id="modehint"></p>
+
+    <div class="step" style="margin-top:22px"><i>3</i> Oven <small style="text-transform:none;letter-spacing:0;font-family:var(--font-body);color:var(--muted)">(optional)</small></div>
+    <div class="row"><div class="grow"><label for="mins" style="margin-top:0">Time in recipe (min)</label><input type="number" id="mins" min="1" max="300" inputmode="numeric" placeholder="30"></div><div class="grow"><label for="temp" style="margin-top:0">Temperature</label><input type="number" id="temp" min="100" max="300" inputmode="numeric" placeholder="180"></div><div style="flex:0 0 96px"><label for="tunit" style="margin-top:0">Unit</label><select id="tunit"><option value="C">°C</option><option value="F">°F</option></select></div></div>
+  </div>
+
+  <div class="card result" aria-live="polite">
+    <h2>Your scaled recipe</h2>
+    <div id="out"><p class="empty">Paste a recipe on the left, or press “Try a sample”.</p></div>
+  </div>
+</div>
+
+<section class="info" id="how"><h2>How it works</h2><ol><li><b>Area, not diameter.</b> A 9″ round holds about 27% more than an 8″ round, not 12%. Cakecalc compares real pan areas, including rectangles, loaves and bundts.</li><li><b>Everything scales together.</b> Flour, sugar, butter, leavening and spices all use the same factor, so the cake keeps its texture.</li><li><b>Eggs are rounded, then fixed.</b> You get the nearest whole egg and how much beaten egg to add or remove.</li><li><b>Oven time follows depth.</b> Same depth means about the same time. Deeper batter bakes longer at a slightly lower temperature.</li></ol></section>
+
+<section class="info" id="chart"><h2>Pan size chart</h2><p>Every pan Cakecalc knows, compared with an 8″ round. Multiply a recipe by the last column to bake it in that pan at the same batter depth.</p>
+<!--CHART--><div class="tablewrap"><table><thead><tr><th>Pan</th><th>Base area</th><th>Capacity</th><th>× an 8″ round</th></tr></thead><tbody>
+<tr><td>6″ round (15 cm)</td><td>177 cm²</td><td>880 ml</td><td><b>×0.56</b></td></tr>
+<tr><td>7″ round (18 cm)</td><td>254 cm²</td><td>1270 ml</td><td><b>×0.81</b></td></tr>
+<tr><td>8″ round (20 cm)</td><td>314 cm²</td><td>1570 ml</td><td><b>×1.00</b></td></tr>
+<tr><td>9″ round (23 cm)</td><td>415 cm²</td><td>2080 ml</td><td><b>×1.32</b></td></tr>
+<tr><td>10″ round (25 cm)</td><td>491 cm²</td><td>2450 ml</td><td><b>×1.56</b></td></tr>
+<tr><td>12″ round (30 cm)</td><td>707 cm²</td><td>3530 ml</td><td><b>×2.25</b></td></tr>
+<tr><td>6″ square (15 cm)</td><td>225 cm²</td><td>1130 ml</td><td><b>×0.72</b></td></tr>
+<tr><td>8″ square (20 cm)</td><td>400 cm²</td><td>2000 ml</td><td><b>×1.27</b></td></tr>
+<tr><td>9″ square (23 cm)</td><td>529 cm²</td><td>2650 ml</td><td><b>×1.68</b></td></tr>
+<tr><td>9×13″ rectangle (23×33 cm)</td><td>759 cm²</td><td>3800 ml</td><td><b>×2.42</b></td></tr>
+<tr><td>11×7″ rectangle (28×18 cm)</td><td>504 cm²</td><td>2520 ml</td><td><b>×1.60</b></td></tr>
+<tr><td>Half sheet 18×13″ (46×33 cm)</td><td>1518 cm²</td><td>3800 ml</td><td><b>×4.83</b></td></tr>
+<tr><td>Quarter sheet 13×9″ (33×23 cm)</td><td>759 cm²</td><td>1900 ml</td><td><b>×2.42</b></td></tr>
+<tr><td>Jelly roll 15×10″ (38×25 cm)</td><td>950 cm²</td><td>1430 ml</td><td><b>×3.02</b></td></tr>
+<tr><td>1 lb loaf 8.5×4.5″ (22×11 cm)</td><td>242 cm²</td><td>1690 ml</td><td><b>×0.77</b></td></tr>
+<tr><td>2 lb loaf 9×5″ (23×13 cm)</td><td>299 cm²</td><td>2090 ml</td><td><b>×0.95</b></td></tr>
+<tr><td>Bundt, 6 cup (1.4 L)</td><td>200 cm²</td><td>1400 ml</td><td><b>×0.64</b></td></tr>
+<tr><td>Bundt, 10 cup (2.4 L)</td><td>300 cm²</td><td>2400 ml</td><td><b>×0.95</b></td></tr>
+<tr><td>Bundt, 12 cup (2.8 L)</td><td>350 cm²</td><td>2800 ml</td><td><b>×1.11</b></td></tr>
+<tr><td>Tube / angel food 10″ (3.5 L)</td><td>389 cm²</td><td>3500 ml</td><td><b>×1.24</b></td></tr>
+</tbody></table></div><!--/CHART--></section>
+
+<section class="info" id="faq"><h2>Questions</h2>
+<details><summary>Is it free?</summary><p>Yes, with no ads, accounts or tracking. The page works offline once loaded; your recipe never leaves your device.</p></details>
+<details><summary>Can I paste a recipe from any website?</summary><p>Yes. Fractions such as 1/2, 1 1/2 and ½, ranges such as 2–3, and units in cups, spoons, grams, ounces and millilitres are understood. Lines without a quantity (like “salt to taste”) are left alone.</p></details>
+<details><summary>Why does a 9×13″ pan need about 1.2× an 8″ round layer pair?</summary><p>It comes down to area: 2 × 8″ rounds is 628 cm², and a 9×13″ is 759 cm², so the factor is 1.21. Cakecalc shows this for any pair of pans.</p></details>
+<details><summary>What about cupcakes and bundt pans?</summary><p>Choose a muffin cup or bundt pan: they are compared by capacity. For cupcakes, pick the muffin size and the number of cups you want to fill.</p></details>
+<details><summary>How accurate is the baking-time advice?</summary><p>It is a rule of thumb, not a guarantee: oven, pan material and batter all matter. Use it as a starting point and check with a skewer.</p></details>
+</section>
+</main>
+<footer><span>© Cakecalc contributors · MIT licence</span><span>Part of a small family of offline tools: <a href="https://worldscape-teal.vercel.app">Worldscape</a> · <a href="https://seedscape-azure.vercel.app">Seedscape</a></span></footer>
+</div>
+
+<div id="printcard"><h2 id="pc-title">Recipe</h2><div class="meta" id="pc-meta"></div><ul id="pc-list"></ul><div class="steps" id="pc-steps"></div><div class="foot">Scaled with Cakecalc</div></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="engine.js"></script>
+<script>
+'use strict';
+(() => {
+const C = Cakecalc, $ = (id) => document.getElementById(id);
+const SAMPLE = `Vanilla butter cake
+2 1/2 cups (300 g) all-purpose flour
+2 1/2 tsp baking powder
+1/2 tsp salt
+1 cup (227 g) butter, softened
+1 1/4 cups (250 g) granulated sugar
+3 large eggs
+1 tbsp vanilla extract
+1 cup (240 ml) whole milk
+
+Beat butter and sugar until pale, add eggs one at a time, then fold in the dry ingredients alternating with the milk.`;
+const st = { mode: 'depth', grams: false, unitSystem: 'keep' };
+const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
+const toast = (m) => { const t = $('toast'); t.textContent = m; t.classList.add('on'); clearTimeout(toast.h); toast.h = setTimeout(() => t.classList.remove('on'), 1800); };
+const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+function fillSelects() {
+  for (const id of ['fromCount', 'toCount']) $(id).innerHTML = [1, 2, 3, 4, 6, 12, 24].map((n) => `<option value="${n}">${n}×</option>`).join('');
+  for (const id of ['fromPan', 'toPan']) $(id).innerHTML = C.PANS.map((p) => `<option value="${p.id}">${p.name}</option>`).join('') + '<option value="custom">Custom pan…</option>';
+  $('fromPan').value = 'round-20'; $('fromCount').value = '2'; $('toPan').value = 'rect-23x33'; $('toCount').value = '1';
+}
+function customHtml(prefix) {
+  return `<div class="row"><div class="grow"><label style="margin-top:0">Shape</label><select id="${prefix}Shape"><option value="round">Round</option><option value="rect">Rectangle / square</option><option value="volume">By volume (ml)</option></select></div><div class="grow"><label style="margin-top:0">Unit</label><select id="${prefix}Unit"><option value="in">inches</option><option value="cm">cm</option></select></div></div><div class="row"><div class="grow"><label>Size A <small id="${prefix}ALbl">(diameter)</small></label><input type="number" id="${prefix}A" min="1" step="any" value="8"></div><div class="grow"><label>Size B <small>(length)</small></label><input type="number" id="${prefix}B" min="1" step="any" value="8"></div><div class="grow"><label>Depth <small>(opt.)</small></label><input type="number" id="${prefix}D" min="0.5" step="any" placeholder="2"></div></div>`;
+}
+function panOf(side) {
+  const id = $(side + 'Pan').value, count = +$(side + 'Count').value;
+  if (id !== 'custom') return { pan: C.panById(id), count };
+  const shape = $(side + 'Shape').value, unit = $(side + 'Unit').value;
+  const a = parseFloat($(side + 'A').value), b = parseFloat($(side + 'B').value), d = parseFloat($(side + 'D').value);
+  if (!(a > 0)) return null;
+  if (shape === 'volume') return { pan: C.customPan({ shape, ml: a * (unit === 'in' ? 16.387 : 1), depth: d || undefined, unit }), count };
+  return { pan: C.customPan({ shape, a, b: b > 0 ? b : a, depth: d || undefined, unit }), count };
+}
+
+function panSvg(p, count, scale) {
+  const px = (cm) => cm * scale, W = 130, H = 96;
+  let shape;
+  if (p.shape === 'round') { const r = Math.min(px(p.d) / 2, 46); shape = `<circle cx="${W / 2}" cy="${H / 2}" r="${r}" fill="#ffd6df" stroke="#d9466f" stroke-width="2"/>`; }
+  else if (p.shape === 'rect') { const w = Math.min(px(p.l), 120), h = Math.min(px(p.w), 90); shape = `<rect x="${(W - w) / 2}" y="${(H - h) / 2}" width="${w}" height="${h}" rx="6" fill="#ffd6df" stroke="#d9466f" stroke-width="2"/>`; }
+  else { const r = Math.min(Math.sqrt(C.area(p) / Math.PI) * scale, 44); shape = `<circle cx="${W / 2}" cy="${H / 2}" r="${r}" fill="#ffe7c2" stroke="#e9a23b" stroke-width="2"/><circle cx="${W / 2}" cy="${H / 2}" r="${r * 0.28}" fill="#fff6ec" stroke="#e9a23b" stroke-width="2"/>`; }
+  return `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(p.name)}">${shape}</svg>`;
+}
+
+function calc() {
+  const from = panOf('from'), to = panOf('to'), text = $('recipe').value;
+  $('modehint').textContent = st.mode === 'depth' ? 'Keeps the batter the same thickness: best for most layer and tray cakes.' : 'Fills each pan to its normal depth: use for loaf, bundt or when depth differs a lot.';
+  if (!from || !to) { $('out').innerHTML = '<p class="empty">Fill in the custom pan size.</p>'; return; }
+  const minutes = parseFloat($('mins').value), temp = parseFloat($('temp').value);
+  const plan = C.plan({ from, to, mode: st.mode, bake: minutes > 0 && temp > 0 ? { minutes, temp, tempUnit: $('tunit').value } : (minutes > 0 ? { minutes, temp: 0, tempUnit: $('tunit').value } : null) });
+  const f = plan.factor, lines = text.trim() ? C.scaleRecipe(text, f, { grams: st.grams }) : [];
+  const maxCm = Math.max(...[from.pan, to.pan].map((p) => (p.shape === 'round' ? p.d : p.shape === 'rect' ? p.l : Math.sqrt(C.area(p) / Math.PI) * 2))), scale = Math.min(4.2, 110 / maxCm);
+  const fmtN = (n, p) => (n > 1 ? `${n}× ` : '') + p.name.replace(/\s*\(.*\)$/, '');
+  let h = `<div class="big">×${Math.round(f * 100) / 100} <small>${C.describe(f)}</small></div>`;
+  h += `<div class="pans"><figure>${panSvg(from.pan, from.count, scale)}${esc(fmtN(from.count, from.pan))}</figure><span aria-hidden="true" style="font-size:26px;color:var(--berry)">→</span><figure>${panSvg(to.pan, to.count, scale)}${esc(fmtN(to.count, to.pan))}</figure></div>`;
+  if (plan.bake) { const b = plan.bake; h += `<div class="oven"><b>Bake ${b.minMinutes}–${b.maxMinutes} min${b.temp ? ` at ${b.temp}°${b.tempUnit}` : ''}</b><p>${esc(b.note || 'Check with a skewer: it should come out clean.')}</p></div>`; }
+  if (lines.length) {
+    h += '<ul class="ing">' + lines.map((l, i) => l.blank ? '' : l.text ? `<li class="text">${esc(l.text)}</li>` : `<li><b>${esc(l.ingredient.text)}</b> ${esc(l.ingredient.name)}${l.ingredient.note ? ', ' + esc(l.ingredient.note) : ''}${l.tip ? `<span class="tip">${esc(l.tip)}</span>` : ''}</li>`).join('') + '</ul>';
+    h += `<div class="actions"><button class="btn primary" id="print" type="button">Print recipe card</button><button class="btn" id="copy" type="button">Copy</button><button class="btn" id="grams" type="button" aria-pressed="${st.grams}">${st.grams ? 'Hide grams' : 'Also show grams'}</button></div>`;
+  } else h += '<p class="empty">Paste a recipe to see the scaled ingredients.</p>';
+  $('out').innerHTML = h;
+  // print card
+  const title = (text.split('\n').find((l) => l.trim() && !/^\s*[\d½¼¾⅓⅔⅛]/.test(l)) || 'Scaled recipe').trim().slice(0, 60);
+  $('pc-title').textContent = title; $('pc-meta').textContent = `${fmtN(from.count, from.pan)} → ${fmtN(to.count, to.pan)} · ×${Math.round(f * 100) / 100}${plan.bake ? ` · bake ${plan.bake.minMinutes}–${plan.bake.maxMinutes} min${plan.bake.temp ? ` at ${plan.bake.temp}°${plan.bake.tempUnit}` : ''}` : ''}`;
+  $('pc-list').innerHTML = lines.filter((l) => l.ingredient).map((l) => `<li><b>${esc(l.ingredient.text)}</b> ${esc(l.ingredient.name)}${l.ingredient.note ? ', ' + esc(l.ingredient.note) : ''}</li>`).join('');
+  $('pc-steps').textContent = lines.filter((l) => l.text && l.text !== title).map((l) => l.text).join('\n\n');
+  store.set('cc-recipe', text);
+  st.last = lines.map((l) => (l.blank ? '' : l.text ? l.text : l.line)).join('\n');
+}
+
+function wire() {
+  for (const id of ['recipe', 'fromCount', 'toCount', 'mins', 'temp', 'tunit']) $(id).addEventListener('input', calc);
+  for (const side of ['from', 'to']) {
+    $(side + 'Custom').innerHTML = customHtml(side);
+    $(side + 'Pan').addEventListener('change', () => { $(side + 'Custom').classList.toggle('on', $(side + 'Pan').value === 'custom'); calc(); });
+    $(side + 'Custom').addEventListener('input', () => { $(side + 'ALbl').textContent = $(side + 'Shape').value === 'round' ? '(diameter)' : $(side + 'Shape').value === 'rect' ? '(width)' : '(volume)'; calc(); });
+  }
+  $('mode').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; st.mode = b.dataset.v; $('mode').querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); calc(); });
+  $('sample').onclick = () => { $('recipe').value = SAMPLE; $('mins').value = 30; $('temp').value = 180; calc(); };
+  $('clear').onclick = () => { $('recipe').value = ''; calc(); };
+  $('out').addEventListener('click', async (e) => {
+    const b = e.target.closest('button'); if (!b) return;
+    if (b.id === 'print') window.print();
+    if (b.id === 'copy') { try { await navigator.clipboard.writeText(st.last); toast('Copied'); } catch (err) { toast('Select the text and copy'); } }
+    if (b.id === 'grams') { st.grams = !st.grams; calc(); }
+  });
+}
+fillSelects(); wire();
+const saved = store.get('cc-recipe'); if (saved) $('recipe').value = saved;
+calc();
+})();
+</script>
+</body>
+</html>
