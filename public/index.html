@@ -138,7 +138,7 @@ footer { margin-top: 60px; padding: 30px 0 50px; border-top: 1px solid var(--lin
 </tbody></table></div><!--/CHART--></section>
 
 <section class="info" id="faq"><h2>Questions</h2>
-<details><summary>Is it free?</summary><p>Yes, with no ads, accounts or tracking. The page works offline once loaded; your recipe never leaves your device.</p></details>
+<details><summary>Is it free?</summary><p>Yes, with no ads, accounts or cookies. The site only counts anonymous page views (Vercel Web Analytics). The page works offline once loaded; your recipe never leaves your device.</p></details>
 <details><summary>Does it work with metric and European recipes?</summary><p>Yes. Switch “Show amounts in” to Metric and cups, spoons, ounces and sticks become grams and millilitres, using typical weights for flour, sugar, butter and more. It also reads dl, cl, dag, EL/TL and Slovene units such as žlica and žlička, and has 22, 24, 26 and 28 cm springform and baking-tray sizes.</p></details>
 <details><summary>Can I just change the number of servings?</summary><p>Yes: choose “Number of servings”, enter what the recipe serves and what you need. Every ingredient is multiplied by the same factor. Keep the same pan size and bake as written, using more pans or batches.</p></details>
 <details><summary>Can I paste a recipe from any website?</summary><p>Yes. Fractions such as 1/2, 1 1/2 and ½, ranges such as 2–3, and units in cups, spoons, grams, ounces and millilitres are understood. Lines without a quantity (like “salt to taste”) are left alone.</p></details>
@@ -270,5 +270,7 @@ const saved = store.get('cc-recipe'); if (saved) $('recipe').value = saved;
 calc();
 })();
 </script>
+<script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
+<script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>

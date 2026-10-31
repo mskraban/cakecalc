@@ -34,7 +34,7 @@ Your recipe says two 8″ round pans and you only own a 9×13″. Guessing gives
 - ⚖️ **Optional grams** for cup amounts of 17 common ingredients.
 - 🔥 **Oven advice**: same depth keeps the time; deeper batter goes longer and cooler; thinner bakes faster.
 - 🖨️ **Print a recipe card** with one click.
-- 🔒 **Private and offline.** Nothing leaves your browser. No AI, no tracking, no dependencies.
+- 🔒 **Private and offline.** Your recipe never leaves your browser. No AI, no cookies, no dependencies. The hosted site only counts anonymous page views (Vercel Web Analytics).
 
 ## Run it
 

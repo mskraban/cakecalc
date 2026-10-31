@@ -18,7 +18,7 @@ test('title, description, canonical, social tags and a single h1', () => {
 });
 test('structured data parses; local files exist', () => {
   for (const m of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) JSON.parse(m[1]);
-  for (const m of html.replace(/<script>[\s\S]*?<\/script>/g, '').matchAll(/(?:href|src)="([^"#?]+)[^"]*"/g)) { const u = m[1]; if (/^(https?:|mailto:|data:)/.test(u)) continue; assert.ok(fs.existsSync(path.join(PUB, u)), `missing ${u}`); }
+  for (const m of html.replace(/<script>[\s\S]*?<\/script>/g, '').matchAll(/(?:href|src)="([^"#?]+)[^"]*"/g)) { const u = m[1]; if (/^(https?:|mailto:|data:)/.test(u) || u.startsWith('/_vercel/')) continue; assert.ok(fs.existsSync(path.join(PUB, u)), `missing ${u}`); }
 });
 test('the pan chart in the page is up to date (run `npm run chart`)', () => {
   const file = path.join(PUB, 'index.html'), before = fs.readFileSync(file, 'utf8'); execFileSync('node', [path.join(__dirname, '..', 'scripts', 'build-chart.js')]);
