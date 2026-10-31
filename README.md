@@ -7,7 +7,7 @@
 **Change the pan. Keep the cake.**<br>
 Paste any recipe, say which pan it was written for and which you own. Every ingredient is scaled, the eggs are sorted out and the baking time is adjusted.
 
-[**Try it live →**](https://cakecalc.vercel.app) · [Report an issue](https://github.com/mskraban/cakecalc/issues)
+[**Try it live →**](https://cakecalc-sigma.vercel.app) · [Report an issue](https://github.com/mskraban/cakecalc/issues)
 
 [![CI](https://github.com/mskraban/cakecalc/actions/workflows/ci.yml/badge.svg)](https://github.com/mskraban/cakecalc/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-d9466f.svg)](LICENSE)

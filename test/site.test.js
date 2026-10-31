@@ -4,7 +4,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const { execFileSync } = require('node:child_process');
-const PUB = path.join(__dirname, '..', 'public'), SITE = 'https://cakecalc.vercel.app';
+const PUB = path.join(__dirname, '..', 'public'), SITE = 'https://cakecalc-sigma.vercel.app';
 const html = fs.readFileSync(path.join(PUB, 'index.html'), 'utf8');
 const meta = (re) => { const m = html.match(re); return m ? m[1] : null; };
 
