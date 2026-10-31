@@ -82,3 +82,56 @@ test('plan: volume mode compares depth too', () => {
 });
 
 test('describe is plain English', () => { assert.match(C.describe(1.32), /32% more batter/); assert.match(C.describe(0.66), /34% less batter/); assert.match(C.describe(1.01), /same size/); });
+
+test('metric mode: cups, spoons, ounces and sticks become grams and millilitres', () => {
+  const m = (t, f = 1) => C.scaleRecipe(t, f, { system: 'metric' })[0].line;
+  assert.equal(m('1 cup all-purpose flour'), '120 g all-purpose flour');
+  assert.equal(m('1 cup sugar'), '200 g sugar');
+  assert.equal(m('1 cup whole milk'), '240 ml whole milk');
+  assert.equal(m('1 tbsp olive oil'), '15 ml olive oil');
+  assert.equal(m('1 tsp baking powder'), '4.5 g baking powder');
+  assert.equal(m('2 tsp salt'), '12 g salt');
+  assert.equal(m('1 tbsp vanilla extract'), '15 ml vanilla extract');
+  assert.equal(m('1 stick butter'), '115 g butter');
+  assert.equal(m('8 oz cream cheese'), '225 g cream cheese');
+  assert.equal(m('1 lb butter'), '455 g butter');
+  assert.equal(m('1/2 cup butter', 2), '225 g butter');
+  assert.equal(m('3 large eggs', 2), '6 large eggs');
+  assert.equal(m('pinch of salt'), undefined);
+  assert.equal(m('2-3 tbsp cocoa'), '16–24 g cocoa');
+});
+
+test('metric mode prefers a recipe\'s own metric amounts and scales them', () => {
+  assert.equal(C.scaleRecipe('2 1/2 cups (300 g) flour', 1.5, { system: 'metric' })[0].line, '450 g flour');
+  assert.equal(C.scaleRecipe('1 cup (240 ml) milk', 2, { system: 'metric' })[0].line, '480 ml milk');
+  assert.equal(C.scaleRecipe('250 g flour\n1 dl cream\n2 dag nuts\n5 cl rum', 2, { system: 'metric' }).map((l) => l.line).join('|'), '500 g flour|200 ml cream|40 g nuts|100 ml rum');
+  assert.equal(C.scaleRecipe('1 kg flour', 1.5, { system: 'metric' })[0].line, '1.5 kg flour');
+});
+
+test('US mode: grams and millilitres become cups and spoons for known ingredients', () => {
+  const u = (t, f = 1) => C.scaleRecipe(t, f, { system: 'us' })[0].line;
+  assert.equal(u('240 ml milk'), '1 cup milk'); assert.equal(u('480 ml milk'), '2 cups milk'); assert.equal(u('120 g flour'), '1 cup flour');
+  assert.equal(u('5 g baking powder'), '1 tsp baking powder'); assert.equal(u('100 g mystery'), '100 g mystery');
+  assert.equal(u('1 cup (240 ml) milk', 2), '2 cups milk', 'the metric alternative is dropped in US mode');
+});
+
+test('European spoon words and units are understood', () => {
+  assert.deepEqual([C.parseLine('2 EL Zucker').unit, C.parseLine('1 TL Zimt').unit, C.parseLine('2 žlici moke').unit, C.parseLine('1 žlička soli').unit, C.parseLine('3 dag orehov').unit, C.parseLine('2 dl mleka').unit], ['tbsp', 'tsp', 'tbsp', 'tsp', 'dag', 'dl']);
+  assert.equal(C.scaleRecipe('2 el sugar\n1 tl cinnamon', 1, { system: 'metric' }).map((l) => l.line).join('|'), '25 g sugar|2.5 g cinnamon');
+});
+
+test('servings: the factor is simply wanted ÷ original', () => {
+  assert.equal(C.servingsFactor(4, 8), 2); assert.equal(C.servingsFactor(6, 4), 2 / 3); assert.equal(C.servingsFactor(4, 6), 1.5);
+  assert.equal(C.servingsFactor(0, 4), null); assert.equal(C.servingsFactor('x', 4), null); assert.equal(C.servingsFactor(4, -1), null);
+  assert.deepEqual(C.scaleRecipe('2 cups flour\n1 egg', C.servingsFactor(4, 8)).map((l) => l.line), ['4 cups flour', '2 egg']);
+});
+
+test('singular and plural: "1 cup", "1 ½ cups"', () => {
+  assert.equal(C.scaleRecipe('1 cup milk', 1)[0].line, '1 cup milk'); assert.equal(C.scaleRecipe('1 cup milk', 1.5)[0].line, '1 ½ cups milk'); assert.equal(C.scaleRecipe('1 cup milk', 0.5)[0].line, '½ cup milk');
+});
+
+test('European pan sizes exist and compare sensibly', () => {
+  const ids = ['round-24', 'round-26', 'round-28', 'rect-20x30', 'tray-30x40', 'loaf-25x11', 'gugelhupf-22'];
+  for (const id of ids) assert.ok(C.panById(id), id);
+  assert.ok(C.panFactor({ pan: C.panById('round-24'), count: 1 }, { pan: C.panById('round-28'), count: 1 }) > 1.3);
+});

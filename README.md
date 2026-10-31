@@ -24,6 +24,9 @@ Paste any recipe, say which pan it was written for and which you own. Every ingr
 
 Your recipe says two 8″ round pans and you only own a 9×13″. Guessing gives you a sunken middle or a burnt edge. The rule is simple (compare pan *areas*), but nobody wants to do the maths with a fraction like ⅝ cup in the other hand.
 
+- 🌍 **Metric or US, your choice.** Cups, spoons, ounces and sticks become grams and millilitres (or the other way round), using typical weights for flour, sugar, butter, cocoa and more. Defaults to metric and °C outside the US.
+- 👥 **Scale by servings.** The recipe serves 4 and you need 8? Enter both numbers; every ingredient is multiplied by the same factor.
+- 🇪🇺 **European units and pans.** Reads `dl`, `cl`, `dag`, `EL`/`TL` and Slovenian `žlica`/`žlička`; includes 22–28 cm springforms, 20×30 and 25×35 cm tins, 30×40 baking trays and Gugelhupf pans.
 - 📐 **Real pan geometry**: rounds, squares, rectangles, sheets, loaves, bundts, muffin cups, or your own custom pan in cm or inches. Compare by area (same batter depth) or by volume.
 - 🧾 **Paste a recipe from anywhere.** Understands `1/2`, `1 1/2`, `1½`, ranges like `2–3`, cups, spoons, grams, ounces, sticks, and keeps parenthesised metric amounts in step.
 - 🥚 **Eggs stay whole.** You get the nearest whole egg and how many grams of beaten egg to add or remove.
@@ -55,14 +58,17 @@ const plan = C.plan({
   bake: { minutes: 30, temp: 180 },
 });
 plan.factor;                       // 1.21
-C.scaleRecipe('2 1/2 cups flour\n3 large eggs', plan.factor, { grams: true })
-  .map((l) => l.line);             // ['3 cups (360 g) flour', '4 large eggs']
+C.scaleRecipe('2 1/2 cups flour\n3 large eggs', plan.factor, { system: 'metric' })
+  .map((l) => l.line);             // ['360 g flour', '4 large eggs']
+C.servingsFactor(4, 8);            // 2
 ```
 
 ## How the maths works
 
 - **Factor** = (area of the new pans × count) ÷ (area of the recipe's pans × count). A 9″ round is 1.32× an 8″ round, not 1.12×.
 - **Volume mode** multiplies by each pan's capacity instead, for bundts and loaves where depth differs.
+- **Servings** simply use wanted ÷ original. Keep the same pan size and bake as written.
+- **Metric** uses US cup weights (a cup of flour is 120 g) and 240 / 15 / 5 ml for cups, tablespoons and teaspoons of liquids.
 - **Oven time** scales with `(batter depth ratio)^0.8` and the oven drops 10–15 °C for batter more than about 1.5× deeper. It is a rule of thumb, not a promise: check with a skewer.
 
 ## Contributing

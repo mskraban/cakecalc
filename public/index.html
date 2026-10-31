@@ -63,7 +63,7 @@ footer { margin-top: 60px; padding: 30px 0 50px; border-top: 1px solid var(--lin
 <div class="wrap">
 <header class="top"><svg width="34" height="34" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#d9466f"/><path d="M14 36h36v12a4 4 0 0 1-4 4H18a4 4 0 0 1-4-4z" fill="#fff"/><path d="M14 36c4 5 8-3 12 0s8-3 12 0 8-3 12 0V30a4 4 0 0 0-4-4H18a4 4 0 0 0-4 4z" fill="#ffe3ea"/><rect x="30" y="14" width="4" height="12" rx="2" fill="#ffd36e"/><ellipse cx="32" cy="12" rx="3.2" ry="4.4" fill="#ff9d3a"/></svg><b>Cakecalc</b><nav aria-label="Main"><a href="#chart">Pan chart</a><a href="#faq">FAQ</a><a href="https://github.com/mskraban/cakecalc">GitHub</a></nav></header>
 <main id="main">
-<section class="hero"><h1>Change the pan. <em>Keep the cake.</em></h1><p>Paste any recipe, say which pan it was written for and which one you own. Every ingredient is scaled, the eggs are sorted out and the oven time is adjusted.</p></section>
+<section class="hero"><h1>Change the pan. <em>Keep the cake.</em></h1><p>Paste any recipe, then change the pan or the number of servings. Every ingredient is scaled, shown in metric or US units, the eggs are sorted out and the oven time is adjusted.</p></section>
 
 <div class="grid" id="calc">
   <div class="card">
@@ -71,9 +71,15 @@ footer { margin-top: 60px; padding: 30px 0 50px; border-top: 1px solid var(--lin
     <label for="recipe" style="margin-top:0">Paste the ingredients <small>(one per line; steps are kept as they are)</small></label>
     <textarea id="recipe" spellcheck="false" placeholder="2 1/2 cups all-purpose flour&#10;1 cup sugar&#10;3 large eggs&#10;1/2 cup butter, softened&#10;1 tsp vanilla"></textarea>
     <div class="actions" style="margin-top:10px"><button class="btn sm" id="sample" type="button">Try a sample</button><button class="btn sm" id="clear" type="button">Clear</button></div>
+    <label style="margin-top:16px">Show amounts in</label>
+    <div class="seg" id="units" role="group" aria-label="Units for the result"><button type="button" data-v="metric" aria-pressed="false">Metric (g, ml)</button><button type="button" data-v="keep" aria-pressed="false">As written</button><button type="button" data-v="us" aria-pressed="false">US (cups, spoons)</button></div>
+    <p class="hint" id="unithint"></p>
 
-    <div class="step" style="margin-top:22px"><i>2</i> The pans</div>
-    <label for="fromPan" style="margin-top:0">The recipe is written for</label>
+    <div class="step" style="margin-top:22px"><i>2</i> What changes?</div>
+    <div class="seg" id="by" role="group" aria-label="What to scale by"><button type="button" data-v="pans" aria-pressed="true">Pan size</button><button type="button" data-v="servings" aria-pressed="false">Number of servings</button></div>
+    <div id="servBox" hidden><div class="row"><div class="grow"><label for="servFrom">The recipe serves</label><input type="number" id="servFrom" min="0.5" step="any" value="4" inputmode="decimal"></div><div class="grow"><label for="servTo">I want to serve</label><input type="number" id="servTo" min="0.5" step="any" value="8" inputmode="decimal"></div></div><div class="actions" style="margin-top:10px"><button class="btn sm" type="button" data-mult="0.5">½×</button><button class="btn sm" type="button" data-mult="2">2×</button><button class="btn sm" type="button" data-mult="3">3×</button></div><p class="hint">Same pan size? Bake as written. Going bigger in one pan? Switch to “Pan size”.</p></div>
+    <div id="panBox">
+    <label for="fromPan">The recipe is written for</label>
     <div class="row"><select class="n" id="fromCount" aria-label="Number of pans in the recipe"></select><select class="grow" id="fromPan"></select></div>
     <div class="custom" id="fromCustom"></div>
     <label for="toPan">I will bake in</label>
@@ -82,6 +88,7 @@ footer { margin-top: 60px; padding: 30px 0 50px; border-top: 1px solid var(--lin
     <label>How to compare the pans</label>
     <div class="seg" id="mode" role="group" aria-label="Comparison mode"><button type="button" data-v="depth" aria-pressed="true">Same batter depth</button><button type="button" data-v="volume">Fill pans to usual depth</button></div>
     <p class="hint" id="modehint"></p>
+    </div>
 
     <div class="step" style="margin-top:22px"><i>3</i> Oven <small style="text-transform:none;letter-spacing:0;font-family:var(--font-body);color:var(--muted)">(optional)</small></div>
     <div class="row"><div class="grow"><label for="mins" style="margin-top:0">Time in recipe (min)</label><input type="number" id="mins" min="1" max="300" inputmode="numeric" placeholder="30"></div><div class="grow"><label for="temp" style="margin-top:0">Temperature</label><input type="number" id="temp" min="100" max="300" inputmode="numeric" placeholder="180"></div><div style="flex:0 0 96px"><label for="tunit" style="margin-top:0">Unit</label><select id="tunit"><option value="C">°C</option><option value="F">°F</option></select></div></div>
@@ -101,26 +108,39 @@ footer { margin-top: 60px; padding: 30px 0 50px; border-top: 1px solid var(--lin
 <tr><td>7″ round (18 cm)</td><td>254 cm²</td><td>1270 ml</td><td><b>×0.81</b></td></tr>
 <tr><td>8″ round (20 cm)</td><td>314 cm²</td><td>1570 ml</td><td><b>×1.00</b></td></tr>
 <tr><td>9″ round (23 cm)</td><td>415 cm²</td><td>2080 ml</td><td><b>×1.32</b></td></tr>
+<tr><td>22 cm round (≈ 8.5″)</td><td>380 cm²</td><td>1900 ml</td><td><b>×1.21</b></td></tr>
+<tr><td>24 cm round / springform (≈ 9.5″)</td><td>452 cm²</td><td>2260 ml</td><td><b>×1.44</b></td></tr>
 <tr><td>10″ round (25 cm)</td><td>491 cm²</td><td>2450 ml</td><td><b>×1.56</b></td></tr>
+<tr><td>26 cm round / springform (≈ 10″)</td><td>531 cm²</td><td>2650 ml</td><td><b>×1.69</b></td></tr>
+<tr><td>28 cm round / springform (≈ 11″)</td><td>616 cm²</td><td>3080 ml</td><td><b>×1.96</b></td></tr>
 <tr><td>12″ round (30 cm)</td><td>707 cm²</td><td>3530 ml</td><td><b>×2.25</b></td></tr>
 <tr><td>6″ square (15 cm)</td><td>225 cm²</td><td>1130 ml</td><td><b>×0.72</b></td></tr>
 <tr><td>8″ square (20 cm)</td><td>400 cm²</td><td>2000 ml</td><td><b>×1.27</b></td></tr>
 <tr><td>9″ square (23 cm)</td><td>529 cm²</td><td>2650 ml</td><td><b>×1.68</b></td></tr>
+<tr><td>22 cm square</td><td>484 cm²</td><td>2420 ml</td><td><b>×1.54</b></td></tr>
+<tr><td>24 cm square</td><td>576 cm²</td><td>2880 ml</td><td><b>×1.83</b></td></tr>
+<tr><td>20×30 cm rectangle</td><td>600 cm²</td><td>3000 ml</td><td><b>×1.91</b></td></tr>
+<tr><td>25×35 cm rectangle</td><td>875 cm²</td><td>4380 ml</td><td><b>×2.79</b></td></tr>
 <tr><td>9×13″ rectangle (23×33 cm)</td><td>759 cm²</td><td>3800 ml</td><td><b>×2.42</b></td></tr>
 <tr><td>11×7″ rectangle (28×18 cm)</td><td>504 cm²</td><td>2520 ml</td><td><b>×1.60</b></td></tr>
+<tr><td>Baking tray 30×40 cm</td><td>1200 cm²</td><td>3000 ml</td><td><b>×3.82</b></td></tr>
 <tr><td>Half sheet 18×13″ (46×33 cm)</td><td>1518 cm²</td><td>3800 ml</td><td><b>×4.83</b></td></tr>
 <tr><td>Quarter sheet 13×9″ (33×23 cm)</td><td>759 cm²</td><td>1900 ml</td><td><b>×2.42</b></td></tr>
 <tr><td>Jelly roll 15×10″ (38×25 cm)</td><td>950 cm²</td><td>1430 ml</td><td><b>×3.02</b></td></tr>
 <tr><td>1 lb loaf 8.5×4.5″ (22×11 cm)</td><td>242 cm²</td><td>1690 ml</td><td><b>×0.77</b></td></tr>
+<tr><td>Loaf tin 25×11 cm</td><td>275 cm²</td><td>1930 ml</td><td><b>×0.88</b></td></tr>
 <tr><td>2 lb loaf 9×5″ (23×13 cm)</td><td>299 cm²</td><td>2090 ml</td><td><b>×0.95</b></td></tr>
 <tr><td>Bundt, 6 cup (1.4 L)</td><td>200 cm²</td><td>1400 ml</td><td><b>×0.64</b></td></tr>
 <tr><td>Bundt, 10 cup (2.4 L)</td><td>300 cm²</td><td>2400 ml</td><td><b>×0.95</b></td></tr>
 <tr><td>Bundt, 12 cup (2.8 L)</td><td>350 cm²</td><td>2800 ml</td><td><b>×1.11</b></td></tr>
+<tr><td>Gugelhupf / bundt 22 cm (≈ 2.2 L)</td><td>275 cm²</td><td>2200 ml</td><td><b>×0.88</b></td></tr>
 <tr><td>Tube / angel food 10″ (3.5 L)</td><td>389 cm²</td><td>3500 ml</td><td><b>×1.24</b></td></tr>
 </tbody></table></div><!--/CHART--></section>
 
 <section class="info" id="faq"><h2>Questions</h2>
 <details><summary>Is it free?</summary><p>Yes, with no ads, accounts or tracking. The page works offline once loaded; your recipe never leaves your device.</p></details>
+<details><summary>Does it work with metric and European recipes?</summary><p>Yes. Switch “Show amounts in” to Metric and cups, spoons, ounces and sticks become grams and millilitres, using typical weights for flour, sugar, butter and more. It also reads dl, cl, dag, EL/TL and Slovene units such as žlica and žlička, and has 22, 24, 26 and 28 cm springform and baking-tray sizes.</p></details>
+<details><summary>Can I just change the number of servings?</summary><p>Yes: choose “Number of servings”, enter what the recipe serves and what you need. Every ingredient is multiplied by the same factor. Keep the same pan size and bake as written, using more pans or batches.</p></details>
 <details><summary>Can I paste a recipe from any website?</summary><p>Yes. Fractions such as 1/2, 1 1/2 and ½, ranges such as 2–3, and units in cups, spoons, grams, ounces and millilitres are understood. Lines without a quantity (like “salt to taste”) are left alone.</p></details>
 <details><summary>Why does a 9×13″ pan need about 1.2× an 8″ round layer pair?</summary><p>It comes down to area: 2 × 8″ rounds is 628 cm², and a 9×13″ is 759 cm², so the factor is 1.21. Cakecalc shows this for any pair of pans.</p></details>
 <details><summary>What about cupcakes and bundt pans?</summary><p>Choose a muffin cup or bundt pan: they are compared by capacity. For cupcakes, pick the muffin size and the number of cups you want to fill.</p></details>
@@ -149,7 +169,8 @@ const SAMPLE = `Vanilla butter cake
 1 cup (240 ml) whole milk
 
 Beat butter and sugar until pale, add eggs one at a time, then fold in the dry ingredients alternating with the milk.`;
-const st = { mode: 'depth', grams: false, unitSystem: 'keep' };
+const US_LOCALE = /^en-(US|LR|MM)$/i.test(navigator.language || 'en-US') || (navigator.language || 'en') === 'en';
+const st = { mode: 'depth', by: 'pans', grams: false, system: US_LOCALE ? 'keep' : 'metric' };
 const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
 const toast = (m) => { const t = $('toast'); t.textContent = m; t.classList.add('on'); clearTimeout(toast.h); toast.h = setTimeout(() => t.classList.remove('on'), 1800); };
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -182,25 +203,39 @@ function panSvg(p, count, scale) {
 }
 
 function calc() {
-  const from = panOf('from'), to = panOf('to'), text = $('recipe').value;
-  $('modehint').textContent = st.mode === 'depth' ? 'Keeps the batter the same thickness: best for most layer and tray cakes.' : 'Fills each pan to its normal depth: use for loaf, bundt or when depth differs a lot.';
-  if (!from || !to) { $('out').innerHTML = '<p class="empty">Fill in the custom pan size.</p>'; return; }
-  const minutes = parseFloat($('mins').value), temp = parseFloat($('temp').value);
-  const plan = C.plan({ from, to, mode: st.mode, bake: minutes > 0 && temp > 0 ? { minutes, temp, tempUnit: $('tunit').value } : (minutes > 0 ? { minutes, temp: 0, tempUnit: $('tunit').value } : null) });
-  const f = plan.factor, lines = text.trim() ? C.scaleRecipe(text, f, { grams: st.grams }) : [];
-  const maxCm = Math.max(...[from.pan, to.pan].map((p) => (p.shape === 'round' ? p.d : p.shape === 'rect' ? p.l : Math.sqrt(C.area(p) / Math.PI) * 2))), scale = Math.min(4.2, 110 / maxCm);
+  const text = $('recipe').value, minutes = parseFloat($('mins').value), temp = parseFloat($('temp').value), tu = $('tunit').value, bySrv = st.by === 'servings';
+  $('panBox').hidden = bySrv; $('servBox').hidden = !bySrv;
+  $('unithint').textContent = st.system === 'metric' ? 'Cups, spoons and ounces become grams and millilitres. Dry ingredients use typical weights per cup.' : st.system === 'us' ? 'Grams and millilitres become cups and spoons where the ingredient is known.' : '';
+  let f, plan = null, from = null, to = null, sFrom = 0, sTo = 0;
+  if (bySrv) {
+    sFrom = parseFloat($('servFrom').value); sTo = parseFloat($('servTo').value); f = C.servingsFactor(sFrom, sTo);
+    if (!f) { $('out').innerHTML = '<p class="empty">Enter how many servings the recipe makes and how many you want.</p>'; return; }
+  } else {
+    $('modehint').textContent = st.mode === 'depth' ? 'Keeps the batter the same thickness: best for most layer and tray cakes.' : 'Fills each pan to its normal depth: use for loaf, bundt or when depth differs a lot.';
+    from = panOf('from'); to = panOf('to');
+    if (!from || !to) { $('out').innerHTML = '<p class="empty">Fill in the custom pan size.</p>'; return; }
+    plan = C.plan({ from, to, mode: st.mode, bake: minutes > 0 ? { minutes, temp: temp > 0 ? temp : 0, tempUnit: tu } : null });
+    f = plan.factor;
+  }
+  const lines = text.trim() ? C.scaleRecipe(text, f, { grams: st.grams, system: st.system }) : [];
   const fmtN = (n, p) => (n > 1 ? `${n}× ` : '') + p.name.replace(/\s*\(.*\)$/, '');
-  let h = `<div class="big">×${Math.round(f * 100) / 100} <small>${C.describe(f)}</small></div>`;
-  h += `<div class="pans"><figure>${panSvg(from.pan, from.count, scale)}${esc(fmtN(from.count, from.pan))}</figure><span aria-hidden="true" style="font-size:26px;color:var(--berry)">→</span><figure>${panSvg(to.pan, to.count, scale)}${esc(fmtN(to.count, to.pan))}</figure></div>`;
-  if (plan.bake) { const b = plan.bake; h += `<div class="oven"><b>Bake ${b.minMinutes}–${b.maxMinutes} min${b.temp ? ` at ${b.temp}°${b.tempUnit}` : ''}</b><p>${esc(b.note || 'Check with a skewer: it should come out clean.')}</p></div>`; }
+  const fr = Math.round(f * 100) / 100;
+  let h = `<div class="big">×${fr} <small>${bySrv ? `${sFrom} → ${sTo} servings` : C.describe(f)}</small></div>`;
+  if (!bySrv) {
+    const maxCm = Math.max(...[from.pan, to.pan].map((p) => (p.shape === 'round' ? p.d : p.shape === 'rect' ? p.l : Math.sqrt(C.area(p) / Math.PI) * 2))), scale = Math.min(4.2, 110 / maxCm);
+    h += `<div class="pans"><figure>${panSvg(from.pan, from.count, scale)}${esc(fmtN(from.count, from.pan))}</figure><span aria-hidden="true" style="font-size:26px;color:var(--berry)">→</span><figure>${panSvg(to.pan, to.count, scale)}${esc(fmtN(to.count, to.pan))}</figure></div>`;
+    if (plan.bake) { const b = plan.bake; h += `<div class="oven"><b>Bake ${b.minMinutes}–${b.maxMinutes} min${b.temp ? ` at ${b.temp}°${b.tempUnit}` : ''}</b><p>${esc(b.note || 'Check with a skewer: it should come out clean.')}</p></div>`; }
+  } else if (minutes > 0) {
+    h += `<div class="oven"><b>Bake ${minutes} min${temp > 0 ? ` at ${temp}°${tu}` : ''}</b><p>Same pan size: bake exactly as the recipe says, in as many pans or batches as you need.</p></div>`;
+  }
   if (lines.length) {
-    h += '<ul class="ing">' + lines.map((l, i) => l.blank ? '' : l.text ? `<li class="text">${esc(l.text)}</li>` : `<li><b>${esc(l.ingredient.text)}</b> ${esc(l.ingredient.name)}${l.ingredient.note ? ', ' + esc(l.ingredient.note) : ''}${l.tip ? `<span class="tip">${esc(l.tip)}</span>` : ''}</li>`).join('') + '</ul>';
-    h += `<div class="actions"><button class="btn primary" id="print" type="button">Print recipe card</button><button class="btn" id="copy" type="button">Copy</button><button class="btn" id="grams" type="button" aria-pressed="${st.grams}">${st.grams ? 'Hide grams' : 'Also show grams'}</button></div>`;
+    h += '<ul class="ing">' + lines.map((l) => l.blank ? '' : l.text ? `<li class="text">${esc(l.text)}</li>` : `<li><b>${esc(l.ingredient.text)}</b> ${esc(l.ingredient.name)}${l.ingredient.note ? ', ' + esc(l.ingredient.note) : ''}${l.tip ? `<span class="tip">${esc(l.tip)}</span>` : ''}</li>`).join('') + '</ul>';
+    h += `<div class="actions"><button class="btn primary" id="print" type="button">Print recipe card</button><button class="btn" id="copy" type="button">Copy</button>${st.system === 'keep' ? `<button class="btn" id="grams" type="button" aria-pressed="${st.grams}">${st.grams ? 'Hide grams' : 'Also show grams'}</button>` : ''}</div>`;
   } else h += '<p class="empty">Paste a recipe to see the scaled ingredients.</p>';
   $('out').innerHTML = h;
-  // print card
   const title = (text.split('\n').find((l) => l.trim() && !/^\s*[\d½¼¾⅓⅔⅛]/.test(l)) || 'Scaled recipe').trim().slice(0, 60);
-  $('pc-title').textContent = title; $('pc-meta').textContent = `${fmtN(from.count, from.pan)} → ${fmtN(to.count, to.pan)} · ×${Math.round(f * 100) / 100}${plan.bake ? ` · bake ${plan.bake.minMinutes}–${plan.bake.maxMinutes} min${plan.bake.temp ? ` at ${plan.bake.temp}°${plan.bake.tempUnit}` : ''}` : ''}`;
+  const ovenTxt = bySrv ? (minutes > 0 ? ` · bake ${minutes} min${temp > 0 ? ` at ${temp}°${tu}` : ''}` : '') : (plan.bake ? ` · bake ${plan.bake.minMinutes}–${plan.bake.maxMinutes} min${plan.bake.temp ? ` at ${plan.bake.temp}°${plan.bake.tempUnit}` : ''}` : '');
+  $('pc-title').textContent = title; $('pc-meta').textContent = (bySrv ? `serves ${sFrom} → ${sTo}` : `${fmtN(from.count, from.pan)} → ${fmtN(to.count, to.pan)}`) + ` · ×${fr}` + ovenTxt;
   $('pc-list').innerHTML = lines.filter((l) => l.ingredient).map((l) => `<li><b>${esc(l.ingredient.text)}</b> ${esc(l.ingredient.name)}${l.ingredient.note ? ', ' + esc(l.ingredient.note) : ''}</li>`).join('');
   $('pc-steps').textContent = lines.filter((l) => l.text && l.text !== title).map((l) => l.text).join('\n\n');
   store.set('cc-recipe', text);
@@ -214,8 +249,12 @@ function wire() {
     $(side + 'Pan').addEventListener('change', () => { $(side + 'Custom').classList.toggle('on', $(side + 'Pan').value === 'custom'); calc(); });
     $(side + 'Custom').addEventListener('input', () => { $(side + 'ALbl').textContent = $(side + 'Shape').value === 'round' ? '(diameter)' : $(side + 'Shape').value === 'rect' ? '(width)' : '(volume)'; calc(); });
   }
+  $('by').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; st.by = b.dataset.v; $('by').querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); calc(); });
+  $('units').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; setSystem(b.dataset.v); store.set('cc-system', st.system); calc(); });
+  $('servBox').addEventListener('click', (e) => { const b = e.target.closest('button[data-mult]'); if (!b) return; $('servTo').value = Math.round(parseFloat($('servFrom').value) * parseFloat(b.dataset.mult) * 100) / 100; calc(); });
+  for (const id of ['servFrom', 'servTo']) $(id).addEventListener('input', calc);
   $('mode').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; st.mode = b.dataset.v; $('mode').querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); calc(); });
-  $('sample').onclick = () => { $('recipe').value = SAMPLE; $('mins').value = 30; $('temp').value = 180; calc(); };
+  $('sample').onclick = () => { $('recipe').value = SAMPLE; $('mins').value = 30; $('temp').value = $('tunit').value === 'F' ? 350 : 180; calc(); };
   $('clear').onclick = () => { $('recipe').value = ''; calc(); };
   $('out').addEventListener('click', async (e) => {
     const b = e.target.closest('button'); if (!b) return;
@@ -224,7 +263,9 @@ function wire() {
     if (b.id === 'grams') { st.grams = !st.grams; calc(); }
   });
 }
+function setSystem(v) { st.system = v; $('units').querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x.dataset.v === v))); }
 fillSelects(); wire();
+{ const sv = store.get('cc-system'); setSystem(['metric', 'keep', 'us'].includes(sv) ? sv : st.system); $('tunit').value = US_LOCALE ? 'F' : 'C'; if (US_LOCALE) { $('temp').placeholder = '350'; } }
 const saved = store.get('cc-recipe'); if (saved) $('recipe').value = saved;
 calc();
 })();

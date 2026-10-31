@@ -16,21 +16,32 @@
     { id: 'round-18', name: '7″ round (18 cm)', shape: 'round', d: 18, depth: 5 },
     { id: 'round-20', name: '8″ round (20 cm)', shape: 'round', d: 20, depth: 5 },
     { id: 'round-23', name: '9″ round (23 cm)', shape: 'round', d: 23, depth: 5 },
+    { id: 'round-22', name: '22 cm round (≈ 8.5″)', shape: 'round', d: 22, depth: 5 },
+    { id: 'round-24', name: '24 cm round / springform (≈ 9.5″)', shape: 'round', d: 24, depth: 5 },
     { id: 'round-25', name: '10″ round (25 cm)', shape: 'round', d: 25, depth: 5 },
+    { id: 'round-26', name: '26 cm round / springform (≈ 10″)', shape: 'round', d: 26, depth: 5 },
+    { id: 'round-28', name: '28 cm round / springform (≈ 11″)', shape: 'round', d: 28, depth: 5 },
     { id: 'round-30', name: '12″ round (30 cm)', shape: 'round', d: 30, depth: 5 },
     { id: 'square-15', name: '6″ square (15 cm)', shape: 'rect', w: 15, l: 15, depth: 5 },
     { id: 'square-20', name: '8″ square (20 cm)', shape: 'rect', w: 20, l: 20, depth: 5 },
     { id: 'square-23', name: '9″ square (23 cm)', shape: 'rect', w: 23, l: 23, depth: 5 },
+    { id: 'square-22', name: '22 cm square', shape: 'rect', w: 22, l: 22, depth: 5 },
+    { id: 'square-24', name: '24 cm square', shape: 'rect', w: 24, l: 24, depth: 5 },
+    { id: 'rect-20x30', name: '20×30 cm rectangle', shape: 'rect', w: 20, l: 30, depth: 5 },
+    { id: 'rect-25x35', name: '25×35 cm rectangle', shape: 'rect', w: 25, l: 35, depth: 5 },
     { id: 'rect-23x33', name: '9×13″ rectangle (23×33 cm)', shape: 'rect', w: 23, l: 33, depth: 5 },
     { id: 'rect-28x18', name: '11×7″ rectangle (28×18 cm)', shape: 'rect', w: 18, l: 28, depth: 5 },
+    { id: 'tray-30x40', name: 'Baking tray 30×40 cm', shape: 'rect', w: 30, l: 40, depth: 2.5 },
     { id: 'sheet-half', name: 'Half sheet 18×13″ (46×33 cm)', shape: 'rect', w: 33, l: 46, depth: 2.5 },
     { id: 'sheet-quarter', name: 'Quarter sheet 13×9″ (33×23 cm)', shape: 'rect', w: 23, l: 33, depth: 2.5 },
     { id: 'jelly-roll', name: 'Jelly roll 15×10″ (38×25 cm)', shape: 'rect', w: 25, l: 38, depth: 1.5 },
     { id: 'loaf-1lb', name: '1 lb loaf 8.5×4.5″ (22×11 cm)', shape: 'rect', w: 11, l: 22, depth: 7 },
+    { id: 'loaf-25x11', name: 'Loaf tin 25×11 cm', shape: 'rect', w: 11, l: 25, depth: 7 },
     { id: 'loaf-2lb', name: '2 lb loaf 9×5″ (23×13 cm)', shape: 'rect', w: 13, l: 23, depth: 7 },
     { id: 'bundt-6', name: 'Bundt, 6 cup (1.4 L)', shape: 'volume', ml: 1400, depth: 7 },
     { id: 'bundt-10', name: 'Bundt, 10 cup (2.4 L)', shape: 'volume', ml: 2400, depth: 8 },
     { id: 'bundt-12', name: 'Bundt, 12 cup (2.8 L)', shape: 'volume', ml: 2800, depth: 8 },
+    { id: 'gugelhupf-22', name: 'Gugelhupf / bundt 22 cm (≈ 2.2 L)', shape: 'volume', ml: 2200, depth: 8 },
     { id: 'tube-10', name: 'Tube / angel food 10″ (3.5 L)', shape: 'volume', ml: 3500, depth: 9 },
     { id: 'muffin-std', name: 'Standard muffin cup (≈ 120 ml)', shape: 'volume', ml: 120, depth: 3.5, each: true },
     { id: 'muffin-mini', name: 'Mini muffin cup (≈ 30 ml)', shape: 'volume', ml: 30, depth: 2.5, each: true },
@@ -89,18 +100,20 @@
   // base: ml for volume, g for mass, null for count words
   const UNITS = {
     cup: { k: 'vol', ml: 236.588, aka: ['cup', 'cups', 'c'] },
-    tbsp: { k: 'vol', ml: 14.7868, aka: ['tbsp', 'tbsps', 'tbs', 'tablespoon', 'tablespoons', 'tbl'] },
-    tsp: { k: 'vol', ml: 4.92892, aka: ['tsp', 'tsps', 'teaspoon', 'teaspoons'] },
+    tbsp: { k: 'vol', ml: 14.7868, aka: ['tbsp', 'tbsps', 'tbs', 'tablespoon', 'tablespoons', 'tbl', 'el', 'esl', 'EL', 'žlica', 'žlice', 'žlici', 'žlic', 'msk', 'rl'] },
+    tsp: { k: 'vol', ml: 4.92892, aka: ['tsp', 'tsps', 'teaspoon', 'teaspoons', 'tl', 'TL', 'žlička', 'žličke', 'žličk', 'žlički', 'tsk'] },
     ml: { k: 'vol', ml: 1, aka: ['ml', 'milliliter', 'milliliters', 'millilitre', 'millilitres'] },
     l: { k: 'vol', ml: 1000, aka: ['l', 'liter', 'liters', 'litre', 'litres'] },
+    cl: { k: 'vol', ml: 10, aka: ['cl', 'centilitre', 'centilitres'] },
     dl: { k: 'vol', ml: 100, aka: ['dl', 'deciliter', 'deciliters'] },
     floz: { k: 'vol', ml: 29.5735, aka: ['floz', 'fl.oz', 'fl', 'fluid'] },
-    g: { k: 'mass', g: 1, aka: ['g', 'gr', 'gram', 'grams', 'gramme', 'grammes'] },
+    g: { k: 'mass', g: 1, aka: ['g', 'gr', 'gram', 'grams', 'gramme', 'grammes', 'gramov', 'grama'] },
+    dag: { k: 'mass', g: 10, aka: ['dag', 'dkg', 'dekagram'] },
     kg: { k: 'mass', g: 1000, aka: ['kg', 'kilo', 'kilos', 'kilogram', 'kilograms'] },
     oz: { k: 'mass', g: 28.3495, aka: ['oz', 'ounce', 'ounces'] },
     lb: { k: 'mass', g: 453.592, aka: ['lb', 'lbs', 'pound', 'pounds'] },
     stick: { k: 'mass', g: 113.4, aka: ['stick', 'sticks'] },
-    pinch: { k: 'small', aka: ['pinch', 'pinches', 'dash', 'dashes'] },
+    pinch: { k: 'small', aka: ['pinch', 'pinches', 'dash', 'dashes', 'prise', 'ščepec', 'ščepca'] },
     clove: { k: 'count', aka: ['clove', 'cloves'] },
     can: { k: 'count', aka: ['can', 'cans', 'tin', 'tins', 'package', 'packages', 'pkg', 'packet', 'packets', 'bar', 'bars'] },
   };
@@ -128,6 +141,48 @@
     [/salt/, 288, 'salt'],
   ];
   function gramsPerCup(name) { const n = name.toLowerCase(); for (const [re, g] of DENSITY) if (re.test(n)) return g; return null; }
+  function densityOf(name) { const n = name.toLowerCase(); for (const [re, g, kind] of DENSITY) if (re.test(n)) return { gpc: g, kind }; return null; }
+  // grams per teaspoon for things that are measured in spoons
+  const SPOON_G = [[/baking powder/, 4.6], [/baking soda|bicarb|bicarbonate/, 5], [/\bsalt\b/, 6], [/yeast/, 3], [/gelatin|gelatine/, 3], [/powdered sugar|icing sugar|confectioners/, 2.5], [/brown sugar/, 4.5], [/granulated sugar|caster|\bsugar\b/, 4.2], [/cocoa|cacao/, 2.7], [/cornstarch|corn flour|cornflour|starch/, 2.8], [/\bflour\b/, 2.6], [/sesame|poppy|chia|flax/, 3], [/cinnamon|nutmeg|paprika|cumin|turmeric|ginger|allspice|cloves?\b|coriander|cardamom|pepper|cayenne|oregano|thyme|basil|rosemary|garlic powder|onion powder|spice|curry|mustard powder/, 2.5]];
+  function spoonGrams(name) { const n = name.toLowerCase(); for (const [re, g] of SPOON_G) if (re.test(n)) return g; return null; }
+  const ML_METRIC = { cup: 240, tbsp: 15, tsp: 5, floz: 29.5735, dl: 100, cl: 10, ml: 1, l: 1000 };
+  const isLiquidKind = (k) => k === 'liquid' || k === 'oil';
+  const METRIC_UNITS = ['g', 'kg', 'dag', 'ml', 'l', 'dl', 'cl'];
+
+  /** Convert an amount to metric: grams for dry things, millilitres for liquids. Counts and pinches are left alone. */
+  function toMetric(qty, unit, name) {
+    switch (unit) {
+      case 'g': case 'ml': return { qty, unit };
+      case 'kg': return { qty: qty * 1000, unit: 'g' };
+      case 'dag': return { qty: qty * 10, unit: 'g' };
+      case 'l': return { qty: qty * 1000, unit: 'ml' };
+      case 'dl': return { qty: qty * 100, unit: 'ml' };
+      case 'cl': return { qty: qty * 10, unit: 'ml' };
+      case 'oz': return { qty: qty * 28.3495, unit: 'g' };
+      case 'lb': return { qty: qty * 453.592, unit: 'g' };
+      case 'stick': return { qty: qty * 113.4, unit: 'g' };
+      case 'cup': case 'tbsp': case 'tsp': case 'floz': {
+        const ml = qty * ML_METRIC[unit], spoon = unit === 'tsp' || unit === 'tbsp';
+        const sg = spoon ? spoonGrams(name) : null;
+        if (sg) return { qty: qty * (unit === 'tbsp' ? 3 : 1) * sg, unit: 'g' };
+        const d = densityOf(name);
+        if (d && !isLiquidKind(d.kind) && unit !== 'floz') return { qty: unit === 'cup' ? qty * d.gpc : unit === 'tbsp' ? qty * d.gpc / 16 : qty * d.gpc / 48, unit: 'g' };   // US cup weights
+        return { qty: ml, unit: 'ml' };
+      }
+      default: return { qty, unit };
+    }
+  }
+  /** Convert metric amounts to cups and spoons where the ingredient is known. */
+  function toUS(qty, unit, name) {
+    if (!METRIC_UNITS.includes(unit)) return { qty, unit };
+    const m = toMetric(qty, unit, name);                        // → g or ml
+    if (m.unit === 'ml') return { qty: m.qty / 236.588, unit: 'cup' };
+    const sg = spoonGrams(name), d = densityOf(name);
+    if (sg && m.qty < 40) return { qty: m.qty / sg, unit: 'tsp' };
+    if (d) return { qty: m.qty / d.gpc, unit: 'cup' };
+    return m;
+  }
+  const tidyUS = (r) => { let x = r; for (let i = 0; i < 2; i++) x = friendlyUnit(x.qty, x.unit); return x; };
 
   const SKIP_UNIT_WORDS = new Set(['of', 'large', 'medium', 'small', 'extra', 'heaping', 'heaped', 'level', 'scant', 'generous']);
 
@@ -143,14 +198,14 @@
     if (!q) return { raw, qty: null, unit: null, name: line, note: '', alt: null };
     let rest = q.rest.trim(), alt = null;
     // leading parenthesised metric alternative: "(300 g)" or "(300g)"
-    let um = /^([a-zA-Z.]+)\b\.?/.exec(rest.replace(/^(heaping|heaped|level|scant|generous)\s+/i, ''));
+    let um = /^([\p{L}.]+)/u.exec(rest.replace(/^(heaping|heaped|level|scant|generous)\s+/i, ''));
     let unit = null;
     if (um) { const id = UNIT_LOOKUP[um[1].toLowerCase().replace(/\.$/, '')]; if (id) { unit = id; rest = rest.replace(/^(heaping|heaped|level|scant|generous)\s+/i, '').slice(um[0].length).trim(); } }
     // "fl oz"
     if (unit === 'floz') rest = rest.replace(/^oz\.?\s*/i, '');
     if (unit === 'floz' && /^fl\b/i.test(um[1])) unit = 'floz';
     const pm = /^\(([^)]*)\)\s*/.exec(rest);
-    if (pm) { const a = parseQty(pm[1]); if (a) { const au = /^\s*([a-zA-Z.]+)/.exec(a.rest); const aid = au && UNIT_LOOKUP[au[1].toLowerCase().replace(/\.$/, '')]; if (aid) { alt = { qty: a.qty, unit: aid }; rest = rest.slice(pm[0].length); } } }
+    if (pm) { const a = parseQty(pm[1]); if (a) { const au = /^\s*([\p{L}.]+)/u.exec(a.rest); const aid = au && UNIT_LOOKUP[au[1].toLowerCase().replace(/\.$/, '')]; if (aid) { alt = { qty: a.qty, unit: aid }; rest = rest.slice(pm[0].length); } } }
     rest = rest.replace(/^of\s+/i, '');
     const parts = rest.split(/,(.*)/s), name = parts[0].trim(), note = (parts[1] || '').trim();
     return { raw, qty: q.qty, qtyMax: q.qtyMax, unit, name, note, alt };
@@ -182,9 +237,9 @@
   }
   function fmtAmount(qty, unit) {
     switch (unit) {
-      case 'cup': return `${fraction(qty)} cup${qty > 1.0001 ? 's' : ''}`;
-      case 'tbsp': case 'tsp': return `${fraction(qty, qty >= 2)} ${unit}`;
-      case 'stick': return `${fraction(qty, true)} stick${qty > 1.0001 ? 's' : ''}`;
+      case 'cup': return `${fraction(qty)} cup${qty >= 1.0625 ? 's' : ''}`;
+      case 'tbsp': case 'tsp': return `${fraction(qty, qty >= 1)} ${unit}`;
+      case 'stick': return `${fraction(qty, true)} stick${qty >= 1.125 ? 's' : ''}`;
       case 'oz': return `${Math.round(qty * 4) / 4} oz`.replace(/\.0+ /, ' ');
       case 'lb': return `${fraction(qty, true)} lb`;
       case 'floz': return `${Math.round(qty * 2) / 2} fl oz`;
@@ -226,14 +281,24 @@
       parts.push(`${shown}`);
       return { text: `${shown}`, name: ing.name, note: ing.note, tip, qty: qty, unit: null, exact: qty };
     }
+    const sys = opts.system || 'keep';
+    let alt = ing.alt, convertedAlt = false;
+    if (sys === 'metric') {
+      if (alt && METRIC_UNITS.includes(alt.unit)) { const a = toMetric(alt.qty * factor, alt.unit, ing.name); qmax = qmax ? (qmax / qty) * a.qty : null; qty = a.qty; unit = a.unit; alt = null; convertedAlt = true; }
+      else if (unit) { const a = toMetric(qty, unit, ing.name), b = qmax ? toMetric(qmax, unit, ing.name) : null; qty = a.qty; unit = a.unit; qmax = b ? b.qty : null; alt = null; }
+      else alt = null;
+    } else if (sys === 'us') {
+      if (unit && METRIC_UNITS.includes(unit)) { const a = tidyUS(toUS(qty, unit, ing.name)), b = qmax ? tidyUS(toUS(qmax, unit, ing.name)) : null; qty = a.qty; unit = a.unit; qmax = b && b.unit === a.unit ? b.qty : (b ? null : null); }
+      alt = null;
+    }
     const before = qty;
-    ({ qty, unit } = friendlyUnit(qty, unit));
+    if (sys !== 'metric') ({ qty, unit } = friendlyUnit(qty, unit));
     if (qmax) qmax *= qty / before;                    // convert the top of a range into the same unit
     let amount = unit ? fmtAmount(qty, unit) : fraction(qty, true);
     if (qmax) { const top = unit ? fmtAmount(qmax, unit) : fraction(qmax, true); amount = amount.replace(/\s+(cups?|tbsp|tsp|sticks?|kg|g|ml|l|dl|lb|oz|fl oz)$/, '') + '–' + top; }
     // original parenthesised alternative, scaled
-    if (ing.alt) { const aq = ing.alt.qty * factor; amount += ` (${fmtAmount(aq, ing.alt.unit)})`; }
-    else if (opts.grams && (unit === 'cup' || unit === 'tbsp' || unit === 'tsp')) {
+    if (alt) { const aq = alt.qty * factor; amount += ` (${fmtAmount(aq, alt.unit)})`; }
+    else if (sys === 'keep' && opts.grams && (unit === 'cup' || unit === 'tbsp' || unit === 'tsp')) {
       const gpc = gramsPerCup(ing.name);
       if (gpc) { const cups = unit === 'cup' ? qty : unit === 'tbsp' ? qty / 16 : qty / 48; amount += ` (${metric(cups * gpc)} g)`; }
     }
@@ -283,6 +348,9 @@
     return out;
   }
 
+  /** Factor for changing the number of servings. Returns null when either number is not a positive number. */
+  function servingsFactor(from, to) { from = Number(from); to = Number(to); return from > 0 && to > 0 && isFinite(from) && isFinite(to) ? to / from : null; }
+
   /** A short plain-English summary of the change. */
   function describe(factor) {
     if (Math.abs(factor - 1) < 0.03) return 'About the same size: no change needed.';
@@ -290,5 +358,5 @@
     return `${pct}% ${factor > 1 ? 'more' : 'less'} batter`;
   }
 
-  return { VERSION, PANS, UNITS, panById, customPan, area, volume, panFactor, parseQty, parseLine, parseRecipe, fraction, fmtAmount, scaleIngredient, scaleRecipe, bakeAdjust, plan, describe, gramsPerCup, friendlyUnit };
+  return { VERSION, PANS, UNITS, toMetric, toUS, servingsFactor, spoonGrams, densityOf, panById, customPan, area, volume, panFactor, parseQty, parseLine, parseRecipe, fraction, fmtAmount, scaleIngredient, scaleRecipe, bakeAdjust, plan, describe, gramsPerCup, friendlyUnit };
 });
